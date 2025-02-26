@@ -1,5 +1,5 @@
 # Use official ROS 2 Jazzy image as the base
-FROM ros:jazzy-perception
+FROM ros:jazzy
 
 ARG PACKAGE_NAME=iglio
 ARG CONTAINER_NAME=naisr_iglio
@@ -32,14 +32,27 @@ RUN apt-get update && apt-get install -y \
     tmux \
     tmuxp \
     htop \
+    wget \
     python3-colcon-common-extensions \
     python3-colcon-clean \
     python3-rosdep \
     python3-vcstool \
+    libeigen3-dev \
+    ros-jazzy-pcl-conversions \
     ros-jazzy-rviz2 \
     ros-jazzy-rqt* \
     libgoogle-glog-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/listsasd
+
+ARG PCL_VERSION=1.15.0
+# Download and compile and install PCL with avx2 support
+RUN --mount=type=cache,target=/naisr2_ws/build,sharing=locked \
+    wget https://github.com/PointCloudLibrary/pcl/archive/refs/tags/pcl-${PCL_VERSION}.tar.gz && \
+    tar xvf pcl-${PCL_VERSION}.tar.gz && cd pcl-pcl-${PCL_VERSION} && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    make -j$(nproc) && make install && \
+    cd / && rm -rf pcl-${PCL_VERSION}.tar.gz pcl-pcl-${PCL_VERSION}
 
 # Ensure rosdep is initialized (should already be in the base image, but just in case)
 RUN rosdep update
@@ -77,7 +90,8 @@ ENV LC_ALL=C.UTF-8
 
 # create with
 
-ARG USERNAME=jobe
+ARG USERNAME
+RUN echo "Creating user: ${USERNAME}"
 RUN groupadd ${USERNAME} && \
     useradd -m -g ${USERNAME} -s /bin/bash ${USERNAME} && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} && \

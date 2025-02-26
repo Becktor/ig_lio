@@ -9,16 +9,19 @@ services:
       args:
       - USER_UID=${UID}     # Pass host UID at runtime
       - USER_GID=${GID}     # Pass host GID at runtime
+      - USERNAME=${USER}    # Pass host username at runtime
     volumes:
       - ../:/naisr2_ws/src/ig_lio  # Mount the repo at runtime
       - /tmp/.X11-unix:/tmp/.X11-unix  # For RViz GUI
-      - /home/jobe/bags:/data/slam_data  # For data storage
-      - ./tmux.conf:/home/jobe/.tmux.conf  # Custom tmux config
+      - /data/slam_data:/data/slam_data  # For data storage
+      - ./tmux.conf:/home/${USER}/.tmux.conf  # Custom tmux config
     environment:
       - DISPLAY=${DISPLAY}  # Pass host display for RViz
       - ROS_DOMAIN_ID=0
       - USER_UID=${UID}     # Pass host UID at runtime
       - USER_GID=${GID}     # Pass host GID at runtime
-      - HOME=/home/jobe  # Set HOME for the user
+      - USERNAME=${USER}    # Pass host username at runtime
+      - HOME=/home/jbecktor  # Set HOME for the user
     tty: true
     stdin_open: true
+    privileged: true

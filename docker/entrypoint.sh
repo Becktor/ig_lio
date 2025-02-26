@@ -2,8 +2,8 @@
 set -e
 
 # Default username (must match Dockerfile)
-USERNAME="jobe"
-
+USERNAME=${USERNAME}
+echo "Starting with UID : ${USERNAME}"
 # Ensure GID is provided via environment variables
 if [ -z "$USER_GID" ]; then
     echo "WARNING: USER_GID not provided. Keeping default group."
