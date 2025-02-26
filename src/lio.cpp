@@ -5,6 +5,8 @@ Timer timer;
 
 bool LIO::MeasurementUpdate(SensorMeasurement& sensor_measurement) {
   if (sensor_measurement.measurement_type_ == MeasurementType::LIDAR) {
+    // print config_.T_imu_lidar
+
     timer.Evaluate(
         [&, this]() {
           // transform scan from lidar's frame to imu's frame
@@ -34,11 +36,14 @@ bool LIO::MeasurementUpdate(SensorMeasurement& sensor_measurement) {
 
   // Make sure the local map is dense enough to measurement update
   if (lidar_frame_count_ <= 10) {
+    LOG(INFO) << "entered transform";
     CloudPtr trans_cloud_ptr(new CloudType());
     pcl::transformPointCloud(
         *sensor_measurement.cloud_ptr_, *trans_cloud_ptr, curr_state_.pose);
     voxel_map_ptr_->AddCloud(trans_cloud_ptr);
     lidar_frame_count_++;
+    
+    LOG(INFO) << "returning transform";
     return true;
   }
 
@@ -65,7 +70,7 @@ bool LIO::MeasurementUpdate(SensorMeasurement& sensor_measurement) {
 
     iter_num_++;
   }
-
+  LOG(INFO) << "asdp";
 //   LOG(INFO) << "final hessian: " << std::endl << final_hessian_;
   // P_ = final_hessian_.inverse();
   ComputeFinalCovariance(delta_x);

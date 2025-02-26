@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE Release)
 add_compile_options(-Wall -Wextra -Wpedantic -O3 -g)
+# Suppress Eigen warnings and disable alignment issues
+#add_compile_options(-Wno-unused-variable -Wno-unused-parameter -Wno-uninitialized -DEIGEN_DONT_VECTORIZE -DEIGEN_DONT_ALIGN)
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
@@ -22,9 +24,8 @@ find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(pcl_conversions REQUIRED)
-find_package(PCL REQUIRED)
+find_package(PCL 1.12.1.99 REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(livox_ros_driver2 REQUIRED)
 find_package(TBB REQUIRED)
 
 # Optionally, handle any custom find_package modules like 'glog.cmake'
@@ -48,7 +49,6 @@ set(dependencies
   tf2
   pcl_conversions
   TBB
-  livox_ros_driver2
   std_srvs
   tf2_geometry_msgs
 )
@@ -80,9 +80,6 @@ add_executable(${PROJECT_NAME}_map_node
   src/map.cpp
 )
 
-
-
-
 # Specify libraries to link a library or executable target against
 ament_target_dependencies(${PROJECT_NAME}_node
   ${dependencies}
@@ -102,18 +99,21 @@ target_link_libraries(${PROJECT_NAME}_node
   ${TBB_LIBRARIES}
   glog
   gflags
+  ament_index_cpp::ament_index_cpp
 )
 target_link_libraries(${PROJECT_NAME}_map_node
   ${PCL_LIBRARIES}
   ${TBB_LIBRARIES}
   glog
   gflags
+  ament_index_cpp::ament_index_cpp
 )
 target_link_libraries(${PROJECT_NAME}_keyframe_node
   ${PCL_LIBRARIES}
   ${TBB_LIBRARIES}
   glog
   gflags
+  ament_index_cpp::ament_index_cpp
 )
 
 # Install the executable

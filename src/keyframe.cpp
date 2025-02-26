@@ -56,8 +56,6 @@ public:
       lidar_type_ = LidarType::VELODYNE;
     } else if (lidar_type_string == "ouster") {
       lidar_type_ = LidarType::OUSTER;
-    } else if (lidar_type_string == "livox") {
-      lidar_type_ = LidarType::LIVOX;
     } else {
       RCLCPP_ERROR(this->get_logger(), "Error lidar type!");
       rclcpp::shutdown();
@@ -403,73 +401,6 @@ void CloudCallBack(const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
 
 // // process livox
 
-void LivoxCloudCallBack(const livox_ros_driver2::msg::CustomMsg::SharedPtr msg) {
-  static double last_lidar_timestamp = 0.0;
-  static CloudPtr temp_cloud_ptr(new CloudType());
-  static bool first_scan_flag = true;
-  static double first_scan_timestamp = 0.0;
-
-  timer.Evaluate(
-      [&]() {
-        lidar_timestamp = msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9;
-
-        {
-          std::lock_guard<std::mutex> lock(buff_mutex);
-
-          // livox synchronizes with external IMU timestamps
-          if (!timediff_correct_flag &&
-              abs(lidar_timestamp - imu_timestamp) > 1.0 && !imu_buff.empty()) {
-            timediff_correct_flag = true;
-            timediff_lidar_wrt_imu = lidar_timestamp + 0.1 - imu_timestamp;
-            // clear unnecessary imu data after the synchronization
-            imu_buff.clear();
-            LOG(INFO) << "timediff_lidar_wrt_imu: " << timediff_lidar_wrt_imu
-                      << std::endl;
-          }
-        }
-
-        // livox has been synchronize with IMU
-        if (!timediff_correct_flag &&
-            abs(lidar_timestamp - imu_timestamp) < 1.0) {
-          timediff_correct_flag = true;
-        }
-        if (!timediff_correct_flag) {
-          LOG(INFO) << "Livox LiDAR has not Sync with other sensor!!!"
-                    << std::endl;
-          return;
-        }
-
-        {
-          std::lock_guard<std::mutex> lock(buff_mutex);
-
-          // prevent timestamp disorder
-          if (lidar_timestamp < last_lidar_timestamp) {
-            LOG(WARNING) << "lidar loop back, clear buffer";
-            cloud_buff.clear();
-            last_lidar_timestamp = lidar_timestamp;
-          }
-
-          if (first_scan_flag) {
-            first_scan_timestamp = lidar_timestamp;
-            first_scan_flag = false;
-          }
-
-          cloud_preprocess_ptr->Process(
-              msg, temp_cloud_ptr, first_scan_timestamp);
-
-          first_scan_flag = true;
-          last_lidar_timestamp = lidar_timestamp;
-
-          CloudPtr cloud_ptr(new CloudType(*temp_cloud_ptr));
-          cloud_buff.push_back(std::make_pair(first_scan_timestamp, cloud_ptr));
-          temp_cloud_ptr->clear();
-        }
-      },
-      "Cloud Preprocess (Livox)");
-}
-
-
-
 bool SyncMeasurements() {
   static bool measurement_pushed = false;
   static bool process_lidar = false;
@@ -810,7 +741,7 @@ void Process() {
   std::string imu_frame;
   std::string lidar_frame;
   std::string map_frame;
-  LidarType lidar_type_ = LidarType::LIVOX;
+  LidarType lidar_type_ = LidarType::OUSTER;
   bool enable_acc_correct;
   bool enable_undistort;
   bool enable_ahrs_initalization;

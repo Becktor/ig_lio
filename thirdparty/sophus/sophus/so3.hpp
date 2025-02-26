@@ -93,7 +93,7 @@ class SO3Base {
     using Adjoint = Matrix<Scalar, DoF, DoF>;
 
     struct TangentAndTheta {
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
         Tangent tangent;
         Scalar theta;
@@ -466,7 +466,7 @@ class SO3 : public SO3Base<SO3<Scalar_, Options>> {
     /// ``Base``.
     friend class SO3Base<SO3<Scalar, Options>>;
 
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
     /// Default constructor initializes unit quaternion to identity rotation.
     ///

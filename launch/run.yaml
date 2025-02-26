@@ -1,0 +1,19 @@
+session_name: dlio_session
+windows:
+  - window_name: ros2_and_rviz
+    layout: tiled
+    shell_command_before:
+      - source /opt/ros/jazzy/setup.bash
+      - source /naisr2_ws/install/setup.bash
+      - export ROS_DOMAIN_ID=0
+      - export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - ros2 param set /use_sim_time true
+    panes:
+      - shell_command:
+          - ros2 launch ig_lio ig_lio_ouster.launch.py
+      - shell_command:
+          - htop
+      - shell_command:
+          - ros2 bag play /data/slam_data/ros2/ox-stair --clock
+      - shell_command:
+          - echo "gg"

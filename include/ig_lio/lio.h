@@ -157,7 +157,7 @@ class LIO {
 
   struct Correspondence {
    public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     Eigen::Vector3d mean_A = Eigen::Vector3d::Zero();
     Eigen::Vector3d mean_B = Eigen::Vector3d::Zero();
     Eigen::Matrix3d mahalanobis = Eigen::Matrix3d::Zero();
@@ -169,7 +169,7 @@ class LIO {
 
   struct State {
    public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     Eigen::Matrix4d pose = Eigen::Matrix4d::Identity();
     Eigen::Vector3d vel = Eigen::Vector3d::Zero();
     Eigen::Vector3d ba = Eigen::Vector3d::Zero();

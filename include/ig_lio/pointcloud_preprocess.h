@@ -14,12 +14,10 @@
 
 #include "point_type.h" // Ensure this is compatible with ROS2
 
-// Assuming Livox ROS2 driver provides a similar message type or you have adapted it
-#include <livox_ros_driver2/msg/custom_msg.hpp>
 
 #include <glog/logging.h>
 
-enum class LidarType { LIVOX, VELODYNE, OUSTER, HESAI };
+enum class LidarType { VELODYNE, OUSTER, HESAI };
 
 struct VelodynePointXYZIRT {
   PCL_ADD_POINT4D;
@@ -84,9 +82,6 @@ class PointCloudPreprocess {
 
   ~PointCloudPreprocess() = default;
 
-  void Process(const livox_ros_driver2::msg::CustomMsg::SharedPtr msg,
-               pcl::PointCloud<PointType>::Ptr& cloud_out,
-               const double last_start_time = 0.0);
 
   void Process(const sensor_msgs::msg::PointCloud2::SharedPtr msg,
                pcl::PointCloud<PointType>::Ptr& cloud_out);

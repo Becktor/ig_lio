@@ -365,7 +365,7 @@ class Sim3 : public Sim3Base<Sim3<Scalar_, Options>> {
   using RxSo3Member = RxSO3<Scalar, Options>;
   using TranslationMember = Vector3<Scalar, Options>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
   /// Default constructor initializes similarity transform to the identity.
   ///
