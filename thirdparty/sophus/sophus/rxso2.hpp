@@ -390,7 +390,7 @@ class RxSO2 : public RxSO2Base<RxSO2<Scalar_, Options>> {
   /// ``Base`` is friend so complex_nonconst can be accessed from ``Base``.
   friend class RxSO2Base<RxSO2<Scalar_, Options>>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   /// Default constructor initializes complex number to identity rotation and
   /// scale to 1.

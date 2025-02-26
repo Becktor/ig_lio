@@ -9,11 +9,14 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.event_handlers import OnProcessExit
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
+from launch_ros.actions import SetParameter
+from launch.substitutions import LaunchConfiguration,PathJoinSubstitution
 def launch_setup(context, *args, **kwargs):
     # Define the 'ig_lio' package directory
     ig_lio_dir = get_package_share_directory('ig_lio')
-    
+    set_use_sim_time = SetParameter('use_sim_time', True)
+
     # Define the path to your parameter file
     param_path = os.path.join(ig_lio_dir, 'config', 'ouster.yaml')
     map_name = LaunchConfiguration('map_name').perform(context)
@@ -23,6 +26,7 @@ def launch_setup(context, *args, **kwargs):
         package='ig_lio',
         executable='ig_lio_node',
         name='ig_lio_node',
+        prefix=['gdbserver localhost:3000'],
         output='screen',
         parameters=[param_path],  # Pass the parameter file path directly
     )
@@ -42,10 +46,22 @@ def launch_setup(context, *args, **kwargs):
         arguments=['0', '0', '0', '0', '0', '0', '1', 'map', 'lio_odom']
     )
 
+    rviz_config_path = PathJoinSubstitution([ig_lio_dir, 'rviz', 'lio_show.rviz'])
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='dlio_rviz',
+        arguments=['-d', rviz_config_path],
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('rviz'))
+    )
+
     return [
+        set_use_sim_time,
         ig_lio_node,
         ig_lio_map_node,
-        #
+        #base_link_to_os_sensor_tf,
+        rviz_node,
         map_to_odom_tf
     ]
 def generate_launch_description():

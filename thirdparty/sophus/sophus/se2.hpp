@@ -377,7 +377,7 @@ class SE2 : public SE2Base<SE2<Scalar_, Options>> {
   using SO2Member = SO2<Scalar, Options>;
   using TranslationMember = Vector2<Scalar, Options>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   /// Default constructor initializes rigid body motion to the identity.
   ///

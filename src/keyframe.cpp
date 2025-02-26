@@ -394,7 +394,7 @@ void CloudCallBack(const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
               std::make_pair(msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9, cloud_ptr));
         }
 
-        // LOG(INFO) << "lidar buff size: " << cloud_buff.size();
+        LOG(INFO) << "lidar buff size: " << cloud_buff.size();
       },
       "Cloud Preprocess (Standard)");
 }

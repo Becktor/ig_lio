@@ -90,7 +90,7 @@ class RxSO3Base {
   using Adjoint = Matrix<Scalar, DoF, DoF>;
 
   struct TangentAndTheta {
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     Tangent tangent;
     Scalar theta;
@@ -427,7 +427,7 @@ class RxSO3 : public RxSO3Base<RxSO3<Scalar_, Options>> {
   /// ``Base`` is friend so quaternion_nonconst can be accessed from ``Base``.
   friend class RxSO3Base<RxSO3<Scalar_, Options>>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   /// Default constructor initializes quaternion to identity rotation and scale
   /// to 1.

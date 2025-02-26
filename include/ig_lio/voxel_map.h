@@ -26,7 +26,7 @@
 
 struct Grid {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Grid(size_t grid_max_points) { points_array_.reserve(2 * grid_max_points); }
 
   size_t hash_idx{0};
@@ -42,7 +42,7 @@ struct Grid {
 
 struct point_hash_idx {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Eigen::Vector3d point_;
   size_t hash_idx_;  //
 

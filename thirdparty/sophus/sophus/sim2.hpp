@@ -365,7 +365,7 @@ class Sim2 : public Sim2Base<Sim2<Scalar_, Options>> {
   using RxSo2Member = RxSO2<Scalar, Options>;
   using TranslationMember = Vector2<Scalar, Options>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   /// Default constructor initializes similarity transform to the identity.
   ///

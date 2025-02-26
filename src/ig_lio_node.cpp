@@ -116,6 +116,7 @@ private:
 
     this->declare_parameter<double>("odom/time_scale", 1000);
     this->declare_parameter<int>("odom/point_filter_num", 6);
+
     // Declare and get parameters for init LIO
     this->declare_parameter<double>("odom/scan_resolution", 0.5);
     this->declare_parameter<double>("odom/voxel_map_resolution", 0.5);
@@ -413,8 +414,6 @@ void CloudCallBack(const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
       "Cloud Preprocess (Standard)");
 }
 
-// // process livox
-
 
 bool SyncMeasurements() {
   static bool measurement_pushed = false;
@@ -425,7 +424,12 @@ bool SyncMeasurements() {
 
   if (cloud_buff.empty() || imu_buff.empty()) {
     if(debug_){
-      LOG(WARNING) << "either imu or cloud is empty" << std::endl;
+      if (cloud_buff.empty() ) {
+        LOG(WARNING) << "Cloud is empty" << std::endl;
+      }
+      if (imu_buff.empty() ) {
+        LOG(WARNING) << "IMU is empty" << std::endl;
+      }
     }
     return false;
   }
@@ -658,7 +662,7 @@ void Process() {
     LOG(WARNING) << "no point, skip this scan";
     return;
   }
-  LOG(WARNING) << "Yo E" << std::endl;
+
   // Setp 4: Measurement Update
   timer.Evaluate([&] { lio_ptr->MeasurementUpdate(sensor_measurement); },
                  "measurement update");
@@ -671,7 +675,7 @@ void Process() {
             << std::endl;
   }
 
-  LOG(WARNING) << "Yo" << std::endl;
+
   // // Setp 5: Send to rviz for visualization
   Eigen::Matrix4d result_pose = lio_ptr->GetCurrentPose();
 
